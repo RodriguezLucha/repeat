@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
-import counterReducer from '../features/counter/counterSlice';
+import flowReducer from '../features/flow/flowSlice';
 
 export default configureStore({
   reducer: {
-    counter: counterReducer,
+    flow: flowReducer,
   },
 });
