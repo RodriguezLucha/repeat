@@ -3,7 +3,7 @@ import React from "react";
 import { Flow } from "./features/flow/Flow.js";
 import { AddEditFlow } from "./features/flow/AddEditFlow.js";
 // import { AddEditCard } from "./features/card/AddEditCardForm";
-// import { Recall } from "./features/recall/Recall";
+import { Recall } from "./features/recall/Recall";
 import {
   BrowserRouter,
   Switch,
@@ -21,10 +21,7 @@ function App() {
           <Route exact path="/flow" component={Flow} />
           <Route exact path="/flow/add" component={AddEditFlow} />
           <Route exact path="/flow/edit/:id" component={AddEditFlow} />
-          {/* <Route exact path="/flow/:flowId/card" component={Card} /> */}
-          {/* <Route exact path="/flow/:flowId/card/add" component={AddEditCard} /> */}
-          {/* <Route exact path="/flow/:flowId/card/edit/:id" component={AddEditCard} /> */}
-          {/* <Route exact path="/flow/:flowId/recall/:id" component={Recall} /> */}
+          <Route exact path="/flow/:id/recall" component={Recall} />
           <Route exact path="/">
             <Redirect to="/flow" />
           </Route>

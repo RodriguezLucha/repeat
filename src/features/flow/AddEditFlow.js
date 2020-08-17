@@ -12,6 +12,7 @@ export const AddEditFlow = () => {
 
   const [name, setName] = useState("");
   const [steps, setSteps] = useState("");
+  const [speed, setSpeed] = useState("");
 
   const params = useParams();
   let { id } = params;
@@ -19,13 +20,13 @@ export const AddEditFlow = () => {
 
   useEffect(
     () => {
-      flow && setName(flow.name) && setSteps(flow.steps)
+      flow && setName(flow.name) && setSteps(flow.steps) && setSpeed(flow.speed)
     },
     [flow]
   );
 
   const handleSubmit = () => {
-    dispatch(addFlow({ name, steps, id }));
+    dispatch(addFlow({ name, steps, speed, id }));
     history.goBack();
   };
 
@@ -43,6 +44,7 @@ export const AddEditFlow = () => {
             {" "}Flow
             <Input value={name} onChange={e => setName(e.target.value)} />
             <Input value={steps} onChange={e => setSteps(e.target.value)} />
+            <Input value={speed} onChange={e => setSpeed(e.target.value)} />
           </Label>
         </Form>
         <div className={styles.center}>

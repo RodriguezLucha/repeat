@@ -30,11 +30,16 @@ export const Flow = () => {
               <ListGroupItem key={f.id}>
                 <div className={styles.listGroupItem}>
                   <div>
-                    <Link to={`/flow/${f.id}/card`}>
+                    <Link to={`/flow/${f.id}/recall`}>
                       {f.name}
                     </Link>
                     <div>
+                      <b>Steps:</b>
                       {f.steps}
+                    </div>
+                    <div>
+                      <b>Speed:</b>
+                      {f.speed}
                     </div>
                   </div>
                   <div className={styles.flowControlContainer}>
