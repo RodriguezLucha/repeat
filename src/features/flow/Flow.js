@@ -25,24 +25,27 @@ export const Flow = () => {
 
       <Container>
         <ListGroup>
-          {categories.map(c => {
+          {categories.map(f => {
             return (
-              <ListGroupItem key={c.id}>
+              <ListGroupItem key={f.id}>
                 <div className={styles.listGroupItem}>
                   <div>
-                    <Link to={`/flow/${c.id}/card`}>
-                      {c.name}
+                    <Link to={`/flow/${f.id}/card`}>
+                      {f.name}
                     </Link>
+                    <div>
+                      {f.steps}
+                    </div>
                   </div>
                   <div className={styles.flowControlContainer}>
                     <Button
                       className={styles.button}
                       color="danger"
-                      onClick={() => dispatch(removeFlow(c.id))}
+                      onClick={() => dispatch(removeFlow(f.id))}
                     >
                       {trashFillIcon()}
                     </Button>
-                    <Link to={`/flow/edit/${c.id}`}>
+                    <Link to={`/flow/edit/${f.id}`}>
                       <Button color="info" className={styles.cardControlButton}>
                         <FontAwesomeIcon icon={faEdit} />
                       </Button>

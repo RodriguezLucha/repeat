@@ -8,9 +8,9 @@ export const flowSlice = createSlice({
   initialState: flowAdapter.getInitialState(),
   reducers: {
     addFlow: (state, action) => {
-      let {name, id} = action.payload;
+      let {name, steps, id} = action.payload;
       id = id ? id : uuid();
-      flowAdapter.upsertOne(state, {name, id});
+      flowAdapter.upsertOne(state, {name, steps, id});
     },
     removeFlow: (state, action) => {
        flowAdapter.removeOne(state, action.payload);
