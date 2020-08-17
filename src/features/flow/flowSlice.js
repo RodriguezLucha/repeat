@@ -1,23 +1,30 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createEntityAdapter } from '@reduxjs/toolkit';
+import { v1 as uuid} from 'uuid'; 
+
+const flowAdapter = createEntityAdapter();
 
 export const flowSlice = createSlice({
   name: 'flow',
-  initialState: {
-    value: 0,
-  },
+  initialState: flowAdapter.getInitialState(),
   reducers: {
-    increment: state => {
-      state.value += 1;
+    addFlow: (state, action) => {
+      let {name, id} = action.payload;
+      id = id ? id : uuid();
+      flowAdapter.upsertOne(state, {name, id});
     },
-    decrement: state => {
-      state.value -= 1;
-    },
-    incrementByAmount: (state, action) => {
-      state.value += action.payload;
+    removeFlow: (state, action) => {
+       flowAdapter.removeOne(state, action.payload);
     },
   },
 });
 
-export const { increment, decrement, incrementByAmount } = flowSlice.actions;
+export const { addFlow, removeFlow } = flowSlice.actions;
+
+export const { 
+  selectById: selectFlowById,
+  selectIds: selectFlowIds,
+  selectEntities: selectFlowEntities,
+  selectAll: selectAllFlows,
+  selectTotal: selectTotalFlows } = flowAdapter.getSelectors(state => state.flow);
 
 export default flowSlice.reducer;
