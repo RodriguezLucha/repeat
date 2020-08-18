@@ -17,10 +17,15 @@ export const AddEditFlow = () => {
   const params = useParams();
   let { id } = params;
   const flow = useSelector(state => selectFlowById(state, id));
+  console.log(flow);
 
   useEffect(
     () => {
-      flow && setName(flow.name) && setSteps(flow.steps) && setSpeed(flow.speed)
+      if(flow){
+        setName(flow.name);
+        setSteps(flow.steps);
+        setSpeed(flow.speed);
+      } 
     },
     [flow]
   );

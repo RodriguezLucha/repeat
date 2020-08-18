@@ -14,6 +14,50 @@ import { useSelector } from "react-redux";
 import { selectFlowById } from "../flow/flowSlice";
 import styles from "./Recall.module.scss";
 
+const synth = window.speechSynthesis;
+
+function speakCount(count){
+  if (synth.speaking) {
+    return;
+  }
+  let utterThis = new SpeechSynthesisUtterance(count);
+  if(count.indexOf('*') !== -1){
+    utterThis = new SpeechSynthesisUtterance(count.substring(0, count.length-1));
+    utterThis.rate = 0.5;
+    
+  }
+
+  synth.speak(utterThis);
+}
+
+
+function useCounter(initialValue, ms) {
+  const [count, setCount] = useState(initialValue);
+  const intervalRef = useRef(null);
+  const start = useCallback(
+    () => {
+      if (intervalRef.current !== null) {
+        return;
+      }
+      intervalRef.current = setInterval(() => {
+        setCount(c => c + 1);
+      }, ms);
+    },
+    [ms]
+  );
+  const stop = useCallback(() => {
+    if (intervalRef.current === null) {
+      return;
+    }
+    clearInterval(intervalRef.current);
+    intervalRef.current = null;
+  }, []);
+  const reset = useCallback(() => {
+    setCount(-1);
+  }, []);
+  return { count, start, stop, reset };
+}
+
 export const Recall = () => {
   const history = useHistory();
   const params = useParams();
@@ -22,44 +66,48 @@ export const Recall = () => {
 
   let flow = useSelector(state => selectFlowById(state, id));
 
-  function useCounter(initialValue, ms) {
-    const [count, setCount] = useState(initialValue);
-    const intervalRef = useRef(null);
-    const start = useCallback(
-      () => {
-        console.log("OMG.");
-        if (intervalRef.current !== null) {
-          return;
-        }
-        intervalRef.current = setInterval(() => {
-          setCount(c => c + 1);
-        }, ms);
-      },
-      [ms]
-    );
-    const stop = useCallback(() => {
-      if (intervalRef.current === null) {
-        return;
-      }
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }, []);
-    const reset = useCallback(() => {
-      setCount(0);
-    }, []);
-    return { count, start, stop, reset };
-  }
+  const [step, setStep] = useState(null);
+  const [num, setNum] = useState(0);
 
-  // const [step, setStep] = useState(null);
-  // const [count, setCount] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
 
-  const { count, start, stop, reset } = useCounter(1, 1000);
+  const { count, start, stop, reset } = useCounter(-1, flow.speed);
+  
+
+  let steps = flow.steps.split(",");
+  let index = count % steps.length;
   console.log(count);
 
+  let theStep = count === -1 ? "-" : steps[index];
+  let theCount = count === -1 ? "-" : Math.floor((count) / steps.length);
+  if(theStep !== '-'){
+    if(isRunning){
+      
+      if(`${theStep}`.indexOf('Count') !== -1 ){
+        speakCount(`${theCount + 1}`+'*');
+      } else {
+        speakCount(theStep);
+      }
+    }
+  }
+
   const playOrPauseButton = !isRunning
-    ? <Button onClick={() => start()}>Start</Button>
-    : <Button onClick={() => stop()}>Pause</Button>;
+    ? <Button
+        onClick={() => {
+          start();
+          setIsRunning(true);
+        }}
+      >
+        Start
+      </Button>
+    : <Button
+        onClick={() => {
+          stop();
+          setIsRunning(false);
+        }}
+      >
+        Pause
+      </Button>;
 
   return (
     <div>
@@ -82,8 +130,14 @@ export const Recall = () => {
           </div>
         </Container>
         <Container>
-          <h1>
+          <h5>
             Count: {count}
+          </h5>
+          <h1>
+            Step: {theStep}
+          </h1>
+          <h1>
+            Count: {theCount}
           </h1>
         </Container>
         <Container>
