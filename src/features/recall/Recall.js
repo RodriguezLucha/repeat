@@ -24,9 +24,7 @@ function speakCount(count){
   if(count.indexOf('*') !== -1){
     utterThis = new SpeechSynthesisUtterance(count.substring(0, count.length-1));
     utterThis.rate = 0.5;
-    
   }
-
   synth.speak(utterThis);
 }
 
@@ -76,13 +74,10 @@ export const Recall = () => {
 
   let steps = flow.steps.split(",");
   let index = count % steps.length;
-  console.log(count);
-
   let theStep = count === -1 ? "-" : steps[index];
   let theCount = count === -1 ? "-" : Math.floor((count) / steps.length);
   if(theStep !== '-'){
     if(isRunning){
-      
       if(`${theStep}`.indexOf('Count') !== -1 ){
         speakCount(`${theCount + 1}`+'*');
       } else {
@@ -119,30 +114,17 @@ export const Recall = () => {
       </Jumbotron>
       <Container>
         <Container className={styles.flowFrontContainer}>
-          <h5>
-            {flow.name}
-          </h5>
-          <div>
-            {flow.steps}
-          </div>
-          <div>
-            {flow.speed}
-          </div>
+          <h5> {flow.name} </h5>
+          <div> {flow.steps} </div>
+          <div> {flow.speed} </div>
         </Container>
         <Container>
-          <h5>
-            Count: {count}
-          </h5>
-          <h1>
-            Step: {theStep}
-          </h1>
-          <h1>
-            Count: {theCount}
-          </h1>
+          <h5> Count: {count} </h5>
+          <h1> Step: {theStep} </h1>
+          <h1> Count: {theCount} </h1>
         </Container>
         <Container>
-          <Button
-            onClick={() => {
+          <Button onClick={() => {
               stop();
               reset();
             }}
