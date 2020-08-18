@@ -5,7 +5,7 @@ import { AddEditFlow } from "./features/flow/AddEditFlow.js";
 // import { AddEditCard } from "./features/card/AddEditCardForm";
 import { Recall } from "./features/recall/Recall";
 import {
-  BrowserRouter,
+  HashRouter,
   Switch,
   Route,
   Redirect
@@ -14,7 +14,7 @@ import {
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
+      <HashRouter>
         
         <Switch>
           <Route exact path="/flow" component={Flow} />
@@ -26,7 +26,7 @@ function App() {
             <Redirect to="/flow" />
           </Route>
         </Switch>
-      </BrowserRouter>
+      </HashRouter>
     </div>
   );
 }
