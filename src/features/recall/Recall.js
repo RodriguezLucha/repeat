@@ -16,18 +16,27 @@ import styles from "./Recall.module.scss";
 
 const synth = window.speechSynthesis;
 
-function speakCount(count){
+function isNumeric(num) {
+  return !isNaN(num);
+}
+
+function speakCount(word) {
   if (synth.speaking) {
     return;
   }
-  let utterThis = new SpeechSynthesisUtterance(count);
-  if(count.indexOf('*') !== -1){
-    utterThis = new SpeechSynthesisUtterance(count.substring(0, count.length-1));
+  let utterThis = new SpeechSynthesisUtterance(word);
+  if (word.indexOf("*") !== -1) {
+    let justWord = word.substring(0, word.length - 1);
+    utterThis = new SpeechSynthesisUtterance(justWord);
     utterThis.rate = 0.5;
+    if (isNumeric(justWord)) {
+      if (justWord >= 13) {
+        utterThis.rate = 0.8;
+      }
+    }
   }
   synth.speak(utterThis);
 }
-
 
 function useCounter(initialValue, ms) {
   const [count, setCount] = useState(initialValue);
@@ -64,22 +73,17 @@ export const Recall = () => {
 
   let flow = useSelector(state => selectFlowById(state, id));
 
-  const [step, setStep] = useState(null);
-  const [num, setNum] = useState(0);
-
   const [isRunning, setIsRunning] = useState(false);
-
-  const { count, start, stop, reset } = useCounter(-1, flow.speed);
-  
+  const { count, start, stop, reset } = useCounter(200, flow.speed);
 
   let steps = flow.steps.split(",");
   let index = count % steps.length;
   let theStep = count === -1 ? "-" : steps[index];
-  let theCount = count === -1 ? "-" : Math.floor((count) / steps.length);
-  if(theStep !== '-'){
-    if(isRunning){
-      if(`${theStep}`.indexOf('Count') !== -1 ){
-        speakCount(`${theCount + 1}`+'*');
+  let theCount = count === -1 ? "-" : Math.floor(count / steps.length);
+  if (theStep !== "-") {
+    if (isRunning) {
+      if (`${theStep}`.indexOf("Count") !== -1) {
+        speakCount(`${theCount + 1}*`);
       } else {
         speakCount(theStep);
       }
@@ -88,6 +92,7 @@ export const Recall = () => {
 
   const playOrPauseButton = !isRunning
     ? <Button
+        className={styles.button}
         onClick={() => {
           start();
           setIsRunning(true);
@@ -96,6 +101,7 @@ export const Recall = () => {
         Start
       </Button>
     : <Button
+        className={styles.button}
         onClick={() => {
           stop();
           setIsRunning(false);
@@ -114,24 +120,40 @@ export const Recall = () => {
       </Jumbotron>
       <Container>
         <Container className={styles.flowFrontContainer}>
-          <h5> {flow.name} </h5>
-          <div> {flow.steps} </div>
-          <div> {flow.speed} </div>
+          <h5>
+            {" "}{flow.name}{" "}
+          </h5>
+          <div>
+            {" "}{flow.steps}{" "}
+          </div>
+          <div>
+            {" "}{flow.speed}{" "}
+          </div>
         </Container>
         <Container>
-          <h5> Count: {count} </h5>
-          <h1> Step: {theStep} </h1>
-          <h1> Count: {theCount} </h1>
+          <h5>
+            {" "}Count: {count}{" "}
+          </h5>
+          <h1>
+            {" "}Step: {theStep}{" "}
+          </h1>
+          <h1>
+            {" "}Count: {theCount}{" "}
+          </h1>
         </Container>
         <Container>
-          <Button onClick={() => {
-              stop();
-              reset();
-            }}
-          >
-            Stop
-          </Button>
+          <Container>
+            <Button
+              className={styles.button}
+              onClick={() => {
+                stop();
+                reset();
+              }}
+            >
+              Stop
+            </Button>
           {playOrPauseButton}
+          </Container>
         </Container>
       </Container>
     </div>
